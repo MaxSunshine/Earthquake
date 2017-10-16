@@ -1,3 +1,7 @@
+#'@import dplyr
+#'@import magrittr
+#'@import maps
+#'@import ggplot2
 
 extract_labels<-function(country,location="")
 {
@@ -18,8 +22,8 @@ extract_labels<-function(country,location="")
   country2<-as.character(country)
   country<-paste(country,":",sep="")
 
-  d<-ldf %>% dplyr::filter(str_detect(labels, country)) %>% unique
-  d2<-ldf %>% dplyr::filter(str_detect(labels, country2)) %>% unique
+  d<-ldf %>% dplyr::filter(stringr::str_detect(labels, country)) %>% unique
+  d2<-ldf %>% dplyr::filter(stringr::str_detect(labels, country2)) %>% unique
 
   #return("x")
   if(nrow(d)==0 )
@@ -69,18 +73,26 @@ quakeDate<-function (YEAR,MONTH=1,DAY=1)
   return(as.Date(yr,format="%Y-%m-%d"))
 }
 
+
+
 #'@title Function eq_location_clean
 #'@description This is the eq_location_clean. This function cleans the LOCATION_NAME column by stripping out
 #'the country name (including the colon) and converts names to title case (as opposed to all caps).
 #'The function creates a cleaned up version ot the LOCATION_NAME called LABELS.
+#'@param  df - A dataframe of the data with LOCATION_NAMEs to be cleansed.
+#'@examples
+#'df<-readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\t")
+#'eq_location_clean(df)
 #'@export
 #'
 eq_location_clean<-function(df)
 {
   #first pass
+  #df$LABELS<-mapply(Earthquake:::extract_labels,tolower(df$COUNTRY),tolower(df$LOCATION_NAME))
   df$LABELS<-mapply(extract_labels,tolower(df$COUNTRY),tolower(df$LOCATION_NAME))
   #second pass
   df$LABELS<-gsub(".*:","",df$LABELS)
+  return(df)
 }
 
 #'@title Function eq_clean_data
@@ -88,22 +100,31 @@ eq_location_clean<-function(df)
 #'raw NOAA data frame and returns a clean data frame.The clean data frame has the following
 #'1. A date column created by uniting the year, month, day and converted to a Date class
 #'2. LATITUDE and LONGITUDE columns converted to numeric class
-#'
+#'3. LABELS a clean version of the LOCATION_NAME data
+#'@param  y - A dataframe of the data to be cleansed.
+#'@examples
+#'df<-readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\t")
+#'eq_clean_data(df)
 #'@export
 eq_clean_data<-function(y)
 {
-  #x<-get(deparse(substitute(y)))
-  x<-transform(as.data.frame(y),
-               LONGITUDE=as.numeric(LONGITUDE),
-               LATITUDE=as.numeric(LATITUDE),
-               EQ_PRIMARY=as.numeric(EQ_PRIMARY),
-               DEATHS=as.numeric(DEATHS),
-               COUNTRY= as.factor(COUNTRY))
-  x$DATE<-mapply(quakeDate,x$YEAR,x$MONTH,x$DAY)%>% as.Date(origin='1970-01-01')
-  #first pass
-  x$LABELS<-mapply(extract_labels,tolower(x$COUNTRY),tolower(x$LOCATION_NAME))
-  #second pass``
-  x$LABELS<-gsub(".*:","",x$LABELS)
-  return(x)
+  with(y,
+       {
+         #x<-get(deparse(substitute(y)))
+         x<-transform(as.data.frame(y),
+                      LONGITUDE=as.numeric(LONGITUDE),
+                      LATITUDE=as.numeric(LATITUDE),
+                      EQ_PRIMARY=as.numeric(EQ_PRIMARY),
+                      DEATHS=as.numeric(DEATHS),
+                      COUNTRY= as.factor(COUNTRY))
+         x$DATE<-mapply(quakeDate,x$YEAR,x$MONTH,x$DAY)%>% as.Date(origin='1970-01-01')
+         x<-eq_location_clean(x)
+         #first pass
+         #x$LABELS<-mapply(extract_labels,tolower(x$COUNTRY),tolower(x$LOCATION_NAME))
+         #second pass``
+         #x$LABELS<-gsub(".*:","",x$LABELS)
+         return(x)
+       }
+  )
 }
 

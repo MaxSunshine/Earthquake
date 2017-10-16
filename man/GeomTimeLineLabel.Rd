@@ -3,17 +3,12 @@
 \docType{data}
 \name{GeomTimeLineLabel}
 \alias{GeomTimeLineLabel}
-\title{GeomTimeLineLable}
+\title{GeomTimeLineLabel}
 \format{An object of class \code{GeomTimeLineLabel} (inherits from \code{Geom}, \code{ggproto}) of length 5.}
 \usage{
 GeomTimeLineLabel
 }
-\arguments{
-\item{x}{A required aesthetic of representing the year.}
-
-\item{label}{A required aesthetic of name of the location}
-}
 \description{
-This is the GeomTimeLineLable. It creates the labels for the top n earthquakes
+This is the GeomTimeLineLabel. It creates the labels for the top n earthquakes
 }
 \keyword{datasets}

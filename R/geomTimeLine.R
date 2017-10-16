@@ -21,12 +21,6 @@ theme_timeline <- function() {
 #' Optional aesthetics include color, size, and alpha (for transparency).
 #'The xaesthetic is a date and an optional y aesthetic is a factor indicating some stratification in which
 #'case multiple time lines will be plotted for each level of the factor (e.g. country)
-#'@param c(x) A required aesthetic of earthquake dates.
-#'@param color An optional aesthetic for the color scale based on DEATHS value.
-#'@param size A optional aesthetic for size of points based on the EQ_PRIMARY value
-#'@param alpha A optional aesthetic for transparency
-#'@param y A optional y aesthetic is a factor indicating some stratification in which
-#'case multiple time lines will be plotted for each level of the factor (e.g. country)
 #' @export
 GeomTimeline <- ggproto("GeomTimeline", Geom,
                        required_aes = c("x"),
@@ -74,6 +68,14 @@ GeomTimeline <- ggproto("GeomTimeline", Geom,
 #'
 #' The wrapper is just to plot the object. See \code{ggplot2} package documenation
 #' for more specifics on geom_* and layer_* functions.
+#' @param mapping - defaults to null
+#' @param data - the data for the geom
+#' @param stat - the type of stat. Defaults to identity
+#' @param position - defaults to identity
+#' @param na.rm - Boolean to include na values; defaults to false
+#' @param show.legend - Boolean to show legend;defaults to false
+#' @param inherit.aes - Boolean to inherit the aesthetics of the calling object; defaults to true
+#' @param ... ignored
 #' @export
 geom_timeline <- function(mapping = NULL, data = NULL, stat = "identity",
                          position = "identity", na.rm = FALSE,

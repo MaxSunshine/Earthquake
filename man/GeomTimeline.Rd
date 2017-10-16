@@ -8,23 +8,12 @@
 \usage{
 GeomTimeline
 }
-\arguments{
-\item{c(x)}{A required aesthetic of earthquake dates.}
-
-\item{color}{An optional aesthetic for the color scale based on DEATHS value.}
-
-\item{size}{A optional aesthetic for size of points based on the EQ_PRIMARY value}
-
-\item{alpha}{A optional aesthetic for transparency}
-
-\item{y}{A optional y aesthetic is a factor indicating some stratification in which
-case multiple time lines will be plotted for each level of the factor (e.g. country)}
-}
 \description{
 This is a geom for plotting a time line of earthquakes ranging from xmin to xmaxdates
 with a point for each earthquake. The min and max dates are defined by filtering the dataset on the DATE field
 Optional aesthetics include color, size, and alpha (for transparency).
 The xaesthetic is a date and an optional y aesthetic is a factor indicating some stratification in which
+case multiple time lines will be plotted for each level of the factor (e.g. country)
 case multiple time lines will be plotted for each level of the factor (e.g. country)
 }
 \keyword{datasets}

@@ -6,8 +6,15 @@
 \usage{
 eq_location_clean(df)
 }
+\arguments{
+\item{df}{- A dataframe of the data with LOCATION_NAMEs to be cleansed.}
+}
 \description{
 This is the eq_location_clean. This function cleans the LOCATION_NAME column by stripping out
 the country name (including the colon) and converts names to title case (as opposed to all caps).
 The function creates a cleaned up version ot the LOCATION_NAME called LABELS.
+}
+\examples{
+df<-readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\\t")
+eq_location_clean(df)
 }

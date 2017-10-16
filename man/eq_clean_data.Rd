@@ -6,9 +6,17 @@
 \usage{
 eq_clean_data(y)
 }
+\arguments{
+\item{y}{- A dataframe of the data to be cleansed.}
+}
 \description{
 This is the eq_clean_data. The function eq_clean_data takes
 raw NOAA data frame and returns a clean data frame.The clean data frame has the following
 1. A date column created by uniting the year, month, day and converted to a Date class
 2. LATITUDE and LONGITUDE columns converted to numeric class
+3. LABELS a clean version of the LOCATION_NAME data
+}
+\examples{
+df<-readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\\t")
+eq_clean_data(df)
 }

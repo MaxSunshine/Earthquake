@@ -1,0 +1,133 @@
+---
+title: "EarthQuake"
+author: "Josef Tapper"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Earthquake}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(magrittr)
+library(dplyr)
+library(lubridate)
+library(Earthquake)
+library(readr)
+```
+
+
+This module contains two geoms that can be used in conjunction with the ggplot2 package to visualize some of the information in the NOAA earthquakes dataset. In enables the user to visualize the times at which earthquakes occur within certain countries. In addition to showing the dates on which the earthquakes occur, we can also show the magnitudes (i.e. Richter scale value) and the number of deaths associated with each earthquake.
+
+The first geom is called geom_timeline(), used for plotting a time line of earthquakes ranging from xmin to xmaxdates with a point for each earthquake. Optional aesthetics include color, size, and alpha (for transparency). The xaesthetic is a date and an optional y aesthetic is a factor indicating some stratification in which case multiple time lines will be plotted for each level of the factor (e.g. country).
+
+The second geom is called geom_timeline_label() for adding annotations to the earthquake data. This geom adds a vertical line to each data point with a text annotation (e.g. the location of the earthquake) attached to each line. There is an option to subset to n_max number of earthquakes, where we take the n_max largest (by magnitude) earthquakes. Aesthetics are x, which is the date of the earthquake and label which takes the column name from which annotations will be obtained.
+
+In addition, there is a function called eq_map() that takes an argument data containing the filtered data frame with earthquakes to visualize. The function maps the epicenters (LATITUDE/LONGITUDE) and annotates each point with in pop up window containing annotation data stored in a column of the data frame. The user should be able to choose which column is used for the annotation in the pop-up with a function argument named annot_col. Each earthquake should be shown with a circle, and the radius of the circle should be proportional to the earthquake's magnitude 
+
+The package also includes a number of functions used for cleaning the data, preparing the dates and visual labels.
+
+
+
+## Functions
+#### eq_location_clean
+This is the eq_location_clean function. This function cleans the LOCATION_NAME column by stripping out the country name (including the colon) and converts names to title case (as opposed to all caps).The function creates a cleaned up version of the LOCATION_NAME called LABELS.
+
+```{r eq_location_clean}
+df<-readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\t")
+df<-eq_location_clean(df)
+df<-df %>% select(LOCATION_NAME,LABELS)
+head(df,n=10L)
+```
+
+#### eq_clean_data
+This is the eq_clean_data function. The function eq_clean_data takes
+raw NOAA data frame and returns a clean data frame.The clean data frame has the following:
+
+1. A date column created by uniting the year, month, day and converted to a Date class
+
+2. LATITUDE and LONGITUDE columns converted to numeric class
+
+3. LABELS a clean version of the LOCATION_NAME data (created by a call to eq_location_clean)
+
+
+```{r eq_clean_data}
+
+df<-readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\t")
+df<-eq_clean_data(df)
+df<-df %>% select(LOCATION_NAME,LABELS,YEAR,MONTH,DAY,DATE,LATITUDE,LONGITUDE)
+head(df,n=10L)
+```
+
+
+
+
+#### eq_create_map
+This function, eq_map() , takes a dataframe as an argument containing
+the filtered data frame with earthquakes to visualize.
+The function maps the epicenters (LATITUDE/LONGITUDE) and annotates each
+point with in pop up window containing annotation data stored in a column of the data frame.
+The user is be able to choose which column is used for the annotation in the pop-up with a
+function argument named annot_col. Each earthquake is shown with a circle, and the radius of the
+circle is proportional to the earthquake's magnitude (EQ_PRIMARY).
+
+```{r eq_create_map, echo=FALSE}
+readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\t") %>% eq_clean_data() %>%
+  dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000)  %>%
+  Earthquake::eq_map(annot_col = "DATE")
+```
+
+
+#### eq_create_label
+This is the eq_create_label function. eq_create_label  takes the dataset as an argument and creates an HTML label that can be used as the annotation text in the leaflet map. This function puts together a
+character string for each earthquake that will show the cleaned location (as cleaned by the eq_location_clean() 
+function created in Module 1), the magnitude (EQ_PRIMARY), and the
+total number of deaths (TOTAL_DEATHS), with boldface labels for
+each ("Location", "Total deaths", and "Magnitude"). If an earthquake is missing values for any of these,
+both the label and the value should be skipped for that element of the tag.
+
+
+```{r eq_create_label}
+readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\t") %>% 
+  eq_clean_data() %>% 
+  dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>% 
+  dplyr::mutate(popup_text = eq_create_label(.)) %>% 
+  eq_map(annot_col = "popup_text")
+```
+
+#### Function geom_timeline
+
+This is a geom for plotting a time line of earthquakes ranging from xmin to xmaxdates
+with a point for each earthquake. The min and max dates are defined by filtering the dataset on the DATE field
+Optional aesthetics include color, size, and alpha (for transparency).
+The xaesthetic is a date and an optional y aesthetic is a factor indicating some stratification in which
+case multiple time lines will be plotted for each level of the factor (e.g. country)
+
+
+```{r geom_timeline, echo=FALSE, fig.width=5,fig.height=3}
+df<-read_delim(system.file("extdata", "signif.txt", package="Earthquake"),delim ="\t") %>% eq_clean_data() %>% select (COUNTRY,LABELS,DATE,EQ_PRIMARY,DEATHS) %>% filter(DATE > as.Date('2000-01-01',"%Y-%m-%d") & DATE < as.Date('2017-01-01',"%Y-%m-%d") & ( COUNTRY=='USA'))
+ggplot( data=df,aes(x=DATE,y=COUNTRY,size = EQ_PRIMARY,colour=DEATHS)) +    geom_timeline() + theme_timeline() + labs(colour="# deaths",size="Richter scale value",x="DATE" )
+```
+
+#### Function geom_timeline_label
+
+This is the GeomTimeLineLabel. It creates the labels for the top 
+n earthquakes. 
+
+```{r geom_timeline_label, echo=FALSE, fig.width=5,fig.height=4}
+df<-read_delim(system.file("extdata", "signif.txt", package="Earthquake"),delim ="\t") %>% eq_clean_data() %>% select (COUNTRY,LABELS,DATE,EQ_PRIMARY,DEATHS) %>% filter(DATE > as.Date('2000-01-01',"%Y-%m-%d") & DATE < as.Date('2017-01-01',"%Y-%m-%d") & ( COUNTRY=='USA'))
+
+ggplot( data=df,aes(x=DATE,y=COUNTRY,size = EQ_PRIMARY,colour=DEATHS)) +
+  geom_timeline() +theme_timeline() +labs(colour="# deaths",size="Richter scale value",x="DATE" ) +
+  geom_timeline_label(data=df,aes(x=DATE,y=COUNTRY,label=LABELS,scale_vline=nrow(as.data.frame(unique(df$COUNTRY )))))
+```
+
+```{r geom_timeline_label2, echo=FALSE, fig.width=5,fig.height=4}
+df<-read_delim(system.file("extdata", "signif.txt", package="Earthquake"),delim ="\t") %>% eq_clean_data() %>% select (COUNTRY,LABELS,DATE,EQ_PRIMARY,DEATHS) %>% filter(DATE > as.Date('2000-01-01',"%Y-%m-%d") & DATE < as.Date('2017-01-01',"%Y-%m-%d") & ( COUNTRY=='USA' | COUNTRY=='CHINA'))
+
+ggplot( data=df,aes(x=DATE,y=COUNTRY,size = EQ_PRIMARY,colour=DEATHS)) +
+  geom_timeline() +theme_timeline() +labs(colour="# deaths",size="Richter scale value",x="DATE" ) +
+  geom_timeline_label(data=df,aes(x=DATE,y=COUNTRY,label=LABELS,scale_vline=nrow(as.data.frame(unique(df$COUNTRY )))))
+```
