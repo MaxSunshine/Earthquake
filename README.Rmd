@@ -1,0 +1,30 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# Earthquake
+
+This is aset of library to view earthquake data from the NOAA as per the Coursera Capstone Project.
+
+It contains a function called eq_clean_data to prepare the data for visualisation and several geoms to assist visualisation.
+
+## Installation
+
+You can install Earthquake from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("MaxSunshine/Earthquake")
+```
+
+
