@@ -9,6 +9,7 @@
 GeomTimeLineLabel
 }
 \description{
-This is the GeomTimeLineLabel. It creates the labels for the top n earthquakes
+This is the GeomTimeLineLabel. It creates the labels for the top
+n earthquakes
 }
 \keyword{datasets}

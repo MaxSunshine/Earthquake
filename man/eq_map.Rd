@@ -24,6 +24,6 @@ circle is proportional to the earthquake's magnitude (EQ_PRIMARY).
 library(magrittr)
 df<-readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\\t")
 df<- df \%>\% eq_clean_data() \%>\%
- dfdplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000)
+ dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000)
  eq_map(df,annot_col = "DATE")
 }

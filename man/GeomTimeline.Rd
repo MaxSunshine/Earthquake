@@ -14,6 +14,5 @@ with a point for each earthquake. The min and max dates are defined by filtering
 Optional aesthetics include color, size, and alpha (for transparency).
 The xaesthetic is a date and an optional y aesthetic is a factor indicating some stratification in which
 case multiple time lines will be plotted for each level of the factor (e.g. country)
-case multiple time lines will be plotted for each level of the factor (e.g. country)
 }
 \keyword{datasets}
