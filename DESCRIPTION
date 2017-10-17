@@ -13,19 +13,19 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
-Imports: devtools,
-  readr,
-  DescTools,
-  tidyr,
+Imports: DescTools,
   htmltools,
   lettercase,
   leaflet,
   magrittr,
   dplyr,
-  stringr,
-  lubridate
+  stringr
 Suggests: knitr,
   rmarkdown,
-  testthat
+  testthat,
+  devtools,
+  readr,
+  tidyr,
+  lubridate
 Depends: R (>= 2.10),maps,ggplot2
 VignetteBuilder: knitr

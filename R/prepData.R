@@ -104,7 +104,7 @@ eq_location_clean<-function(df)
 #'@param  y - A dataframe of the data to be cleansed.
 #'@examples
 #'df<-readr::read_delim(system.file("extdata", "signif.txt", package="Earthquake"), delim = "\t")
-#'eq_clean_data(df)
+#'eq_clean_data(df) %>% head(,n=10L)
 #'@export
 eq_clean_data<-function(y)
 {
