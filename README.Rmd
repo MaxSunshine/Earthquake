@@ -12,6 +12,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+[![Travis-CI Build Status](https://travis-ci.org/MaxSunshine/Earthquake.svg?branch=master)](https://travis-ci.org/MaxSunshine/Earthquake)
+
 # Earthquake
 
 This is aset of library to view earthquake data from the NOAA as per the Coursera Capstone Project.
