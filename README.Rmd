@@ -1,3 +1,5 @@
+[![Travis-CI Build Status](https://travis-ci.org/MaxSunshine/Earthquake.svg?branch=master)](https://travis-ci.org/MaxSunshine/Earthquake)
+
 ---
 output: github_document
 ---
@@ -12,7 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![Travis-CI Build Status](https://travis-ci.org/MaxSunshine/Earthquake.svg?branch=master)](https://travis-ci.org/MaxSunshine/Earthquake)
 
 # Earthquake
 
